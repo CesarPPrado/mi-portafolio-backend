@@ -1,45 +1,44 @@
 // src/server.js
 const express = require('express');
-const app = express(); // IMPORTAR EXPRESS
-const cors = require('cors'); // IMPORTAR CORS
+const cors = require('cors');
+const mongoose = require('mongoose');
+require('dotenv').config();
+
+// --- Importar Modelos ---
+const Project = require('./models/Project'); // 1. IMPORTAMOS EL MODELO
+
+const app = express();
 const PORT = 3001;
 
-// 2. USAR CORS
-//    Esto le dice a tu servidor que acepte peticiones de cualquier origen.
+// --- Middlewares ---
 app.use(cors());
+app.use(express.json());
 
-// 1. Definimos los datos de nuestros proyectos
-//    En el futuro, esto vendrá de una base de datos.
-const proyectosData = [
-  { 
-    id: 1, 
-    title: "Portafolio v1 (HTML/CSS)", 
-    description: "La primera versión de mi portafolio, creada con HTML, CSS y JavaScript puro." 
-  },
-  { 
-    id: 2, 
-    title: "Portafolio v2 (React)", 
-    description: "Versión 2.0 de mi portafolio, construido con React, Vite y CSS Modules." 
-  },
-  { 
-    id: 3, 
-    title: "Servidor de API (Node.js)", 
-    description: "El backend que estás usando ahora mismo, construido con Node.js y Express." 
-  }
-];
+// --- Conexión a MongoDB ---
+const mongoURI = process.env.MONGO_URI;
+mongoose.connect(mongoURI)
+  .then(() => console.log('¡Conexión exitosa a MongoDB Atlas!'))
+  .catch(err => console.error('Error al conectar a MongoDB:', err));
 
-// 2. Creamos una ruta raíz que da la bienvenida
+// --- Rutas de la API ---
 app.get('/', (req, res) => {
-  res.send('Servidor de API de mi portafolio. Visita /api/proyectos para ver los datos.');
+  res.send('Servidor de API de mi portafolio. Conectado a MongoDB.');
 });
 
-// 3. Creamos nuestra primera ruta de API REAL
-//    Esta ruta enviará los datos de los proyectos en formato JSON
-app.get('/api/proyectos', (req, res) => {
-  res.json(proyectosData); // ¡Enviamos los datos como JSON!
+// 2. MODIFICAMOS LA RUTA PARA QUE USE EL MODELO
+app.get('/api/proyectos', async (req, res) => {
+  try {
+    // 3. Project.find() busca TODOS los documentos en la colección 'projects'
+    const proyectos = await Project.find();
+    res.json(proyectos); // Envía los datos de la BD como JSON
+  } catch (err) {
+    // Manejo de errores
+    console.error('Error al obtener proyectos:', err);
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
 });
 
-// 4. Iniciamos el servidor
+// --- Iniciar Servidor ---
 app.listen(PORT, () => {
   console.log(`Servidor corriendo exitosamente en http://localhost:${PORT}`);
 });
