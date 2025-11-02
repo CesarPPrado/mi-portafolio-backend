@@ -5,7 +5,10 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 // --- Importar Modelos ---
-const Project = require('./models/Project'); // 1. IMPORTAMOS EL MODELO
+const Project = require('./models/Project'); // IMPORTAMOS EL MODELO
+
+// --- IMPORTAR RUTAS ---
+const authRoutes = require('./routes/auth'); // 1. IMPORTAR LAS NUEVAS RUTAS
 
 const app = express();
 const PORT = 3001;
@@ -25,10 +28,10 @@ app.get('/', (req, res) => {
   res.send('Servidor de API de mi portafolio. Conectado a MongoDB.');
 });
 
-// 2. MODIFICAMOS LA RUTA PARA QUE USE EL MODELO
+// MODIFICAMOS LA RUTA PARA QUE USE EL MODELO
 app.get('/api/proyectos', async (req, res) => {
   try {
-    // 3. Project.find() busca TODOS los documentos en la colección 'projects'
+    // Project.find() busca TODOS los documentos en la colección 'projects'
     const proyectos = await Project.find();
     res.json(proyectos); // Envía los datos de la BD como JSON
   } catch (err) {
@@ -37,6 +40,11 @@ app.get('/api/proyectos', async (req, res) => {
     res.status(500).json({ message: 'Error en el servidor' });
   }
 });
+
+// --- CONECTAR RUTAS DE AUTENTICACIÓN ---
+// 2. Le decimos a Express que use el archivo de rutas 'auth.js'
+//    para cualquier URL que empiece con '/api/auth'
+app.use('/api/auth', authRoutes);
 
 // --- Iniciar Servidor ---
 app.listen(PORT, () => {
