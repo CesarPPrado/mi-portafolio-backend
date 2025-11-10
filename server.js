@@ -6,9 +6,11 @@ require('dotenv').config();
 
 // --- Importar Modelos ---
 const Project = require('./models/Project'); // IMPORTAMOS EL MODELO
+const User = require('./models/User');
 
 // --- IMPORTAR RUTAS ---
-const authRoutes = require('./routes/auth'); // 1. IMPORTAR LAS NUEVAS RUTAS
+const authRoutes = require('./routes/auth'); // IMPORTAR LA RUTA DE AUTH
+const contactRoutes = require('./routes/contact'); // IMPORTAR RUTA DE CONTACTO
 
 const app = express();
 const PORT = 3001;
@@ -42,9 +44,12 @@ app.get('/api/proyectos', async (req, res) => {
 });
 
 // --- CONECTAR RUTAS DE AUTENTICACIÓN ---
-// 2. Le decimos a Express que use el archivo de rutas 'auth.js'
+//    Le decimos a Express que use el archivo de rutas 'auth.js'
 //    para cualquier URL que empiece con '/api/auth'
 app.use('/api/auth', authRoutes);
+
+// --- CONECTAR RUTA DE CONTACTO ---
+app.use('/api/contact', contactRoutes);
 
 // --- Iniciar Servidor ---
 app.listen(PORT, () => {
