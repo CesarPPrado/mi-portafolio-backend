@@ -26,7 +26,7 @@ const allowedOrigins = [
 // 2. Configurar las opciones de CORS
 const corsOptions = {
   origin: function (origin, callback) {
-    // Permitir peticiones sin 'origin' (como las de Postman o apps móviles)
+    // Permitir peticiones sin 'origin' (como las de Postman)
     if (!origin) return callback(null, true);
 
     // Si el origen de la petición SÍ está en nuestra lista blanca
