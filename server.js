@@ -16,8 +16,32 @@ const app = express();
 const PORT = 3001;
 
 // --- Middlewares ---
-app.use(cors());
-app.use(express.json());
+
+// 1. Definir los orígenes permitidos (Whitelist)
+const allowedOrigins = [
+  'http://localhost:5173', // Para tu desarrollo local
+  'https://mi-portafolio-react-six.vercel.app' // ¡Para tu sitio en producción!
+];
+
+// 2. Configurar las opciones de CORS
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Permitir peticiones sin 'origin' (como las de Postman o apps móviles)
+    if (!origin) return callback(null, true);
+
+    // Si el origen de la petición SÍ está en nuestra lista blanca
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      // Si el origen NO está en la lista blanca
+      callback(new Error('La política de CORS no permite este origen.'), false);
+    }
+  }
+};
+
+// 3. Usar CORS con nuestras opciones configuradas
+app.use(cors(corsOptions));
+app.use(express.json()); // Para que Express entienda el body de las peticiones JSON
 
 // --- Conexión a MongoDB ---
 const mongoURI = process.env.MONGO_URI;
