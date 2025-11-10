@@ -30,8 +30,8 @@ router.post('/', async (req, res) => {
 
   // 4. Configurar el "mailOptions" (el contenido del correo)
   const mailOptions = {
-    from: 'pradopradocs@gmail.com',  // TU EMAIL VERIFICADO EN BREVO
-    to: 'xx_m3c0b0y_xx@hotmail.com',      // El destinatario
+    from: 'pradopradocsr@gmail.com',  // TU EMAIL VERIFICADO EN BREVO
+    to: 'pradopradocsr@gmail.com',      // El destinatario
     replyTo: email,                     // El email del visitante (para que puedas presionar "Responder")
     subject: `Nuevo Mensaje del Portafolio de: ${name}`,
     text: `Nombre: ${name}\nEmail: ${email}\n\nMensaje:\n${message}`,
