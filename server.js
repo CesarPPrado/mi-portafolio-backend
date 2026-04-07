@@ -1,8 +1,9 @@
 // src/server.js
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-require('dotenv').config();
+
 
 // --- Importar Modelos ---
 const Project = require('./models/Project'); // IMPORTAMOS EL MODELO
@@ -65,6 +66,59 @@ app.get('/api/proyectos', async (req, res) => {
     console.error('Error al obtener proyectos:', err);
     res.status(500).json({ message: 'Error en el servidor' });
   }
+});
+
+// Endpoint que devuelve 5 objetos estáticos similares a JSON de proyectos típicos de desarrollo.
+app.get('/api/projects', (req, res) => {
+  const selectedProjects = [
+    {
+      id: 1,
+      title: 'E-Commerce Platform',
+      description: 'A full-stack e-commerce platform with Stripe integration for complete checkout flow.',
+      technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
+      imageUrl: 'https://via.placeholder.com/400x300?text=E-Commerce+Platform',
+      githubUrl: 'https://github.com/username/ecommerce',
+      liveUrl: 'https://ecommerce-live-demo.com'
+    },
+    {
+      id: 2,
+      title: 'Task Management App',
+      description: 'A Kanban-style task management app with real-time updates and drag-and-drop.',
+      technologies: ['Vue.js', 'Firebase', 'Tailwind CSS'],
+      imageUrl: 'https://via.placeholder.com/400x300?text=Task+Management',
+      githubUrl: 'https://github.com/username/task-app',
+      liveUrl: 'https://task-app-demo.com'
+    },
+    {
+      id: 3,
+      title: 'Weather Dashboard',
+      description: 'A dashboard showing current weather and a 5-day forecast using the OpenWeather API.',
+      technologies: ['JavaScript', 'HTML5', 'CSS3', 'REST API'],
+      imageUrl: 'https://via.placeholder.com/400x300?text=Weather+Dashboard',
+      githubUrl: 'https://github.com/username/weather-dash',
+      liveUrl: 'https://weather-dash-demo.com'
+    },
+    {
+      id: 4,
+      title: 'Social Media API',
+      description: 'A robust RESTful backend API for a social media platform handling users, posts, and likes.',
+      technologies: ['Express.js', 'PostgreSQL', 'Prisma', 'JWT'],
+      imageUrl: 'https://via.placeholder.com/400x300?text=Social+Media+API',
+      githubUrl: 'https://github.com/username/social-api',
+      liveUrl: null
+    },
+    {
+      id: 5,
+      title: 'Portfolio Website',
+      description: 'A responsive personal portfolio website to showcase my software projects and skills.',
+      technologies: ['React', 'Framer Motion', 'Styled Components'],
+      imageUrl: 'https://via.placeholder.com/400x300?text=Portfolio+Website',
+      githubUrl: 'https://github.com/username/portfolio',
+      liveUrl: 'https://my-portfolio.com'
+    }
+  ];
+
+  res.json(selectedProjects);
 });
 
 // --- CONECTAR RUTAS DE AUTENTICACIÓN ---
