@@ -12,6 +12,7 @@ const User = require('./models/User');
 // --- IMPORTAR RUTAS ---
 const authRoutes = require('./routes/auth'); // IMPORTAR LA RUTA DE AUTH
 const contactRoutes = require('./routes/contact'); // IMPORTAR RUTA DE CONTACTO
+const analyticsRoutes = require('./routes/analytics'); // IMPORTAR RUTA DE ANALYTICS
 
 const app = express();
 const PORT = 3001;
@@ -128,6 +129,9 @@ app.use('/api/auth', authRoutes);
 
 // --- CONECTAR RUTA DE CONTACTO ---
 app.use('/api/contact', contactRoutes);
+
+// --- CONECTAR RUTA DE ANALYTICS ---
+app.use('/api/analytics', analyticsRoutes);
 
 // --- Iniciar Servidor ---
 app.listen(PORT, () => {
