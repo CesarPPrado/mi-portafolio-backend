@@ -4,6 +4,9 @@ const router = express.Router(); // Usamos el Router de Express
 const User = require('../models/User'); // Importamos el modelo de Usuario
 const bcrypt = require('bcrypt'); // 1. Importar bcrypt
 const jwt = require('jsonwebtoken'); // 2. Importar jsonwebtoken
+const { OAuth2Client } = require('google-auth-library');
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 /**
  * @route   POST /api/auth/register
@@ -100,6 +103,66 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Error en el servidor');
+  }
+});
+
+/**
+ * @route   POST /api/auth/google
+ * @desc    Autentica un usuario con Google (Login / Registro automático)
+ * @access  Public
+ */
+router.post('/google', async (req, res) => {
+  const { credential } = req.body;
+
+  try {
+    if (!credential) {
+      return res.status(400).json({ message: 'No se recibió el token de Google.' });
+    }
+
+    // 1. Verificar el token de Google
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    
+    const payloadGoogle = ticket.getPayload();
+    const email = payloadGoogle.email;
+
+    // 2. Verificar si el usuario ya existe en nuestra base de datos
+    let user = await User.findOne({ email });
+
+    // 3. Si no existe, lo creamos automáticamente (Registro)
+    if (!user) {
+      // Le asignamos una contraseña aleatoria robusta porque Google maneja la auth
+      const randomPassword = \`google_auth_\${Date.now()}_\${Math.random().toString(36).slice(-8)}\`;
+      
+      user = new User({
+        email,
+        password: randomPassword
+      });
+      await user.save();
+    }
+
+    // 4. Iniciar sesión: crear nuestro JWT
+    const payload = {
+      user: {
+        id: user.id
+      }
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: 3600 },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token, isNewUser: !user }); // isNewUser indica si acaba de ser creado
+      }
+    );
+
+  } catch (err) {
+    console.error('Error verificando token de Google:', err.message);
+    res.status(500).json({ message: 'Error de autenticación con Google' });
   }
 });
 
