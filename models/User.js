@@ -10,10 +10,20 @@ const userSchema = new mongoose.Schema({
     unique: true,   // No puede haber dos usuarios con el mismo email
     lowercase: true // Guardar siempre en minúsculas
   },
+  name: {
+    type: String
+  },
   password: {
     type: String,
     required: true // La contraseña es obligatoria
-  }
+  },
+  palettes: [{
+    id: { type: String, required: true },
+    name: { type: String, default: "Mi Paleta" },
+    description: { type: String, default: "" },
+    colors: { type: [String], required: true },
+    date: { type: Date, default: Date.now }
+  }]
 });
 
 // 3. ¡Paso de Seguridad Mágico! (Mongoose Middleware)

@@ -13,6 +13,8 @@ const User = require('./models/User');
 const authRoutes = require('./routes/auth'); // IMPORTAR LA RUTA DE AUTH
 const contactRoutes = require('./routes/contact'); // IMPORTAR RUTA DE CONTACTO
 const analyticsRoutes = require('./routes/analytics'); // IMPORTAR RUTA DE ANALYTICS
+const userRoutes = require('./routes/user'); // IMPORTAR RUTA DE PERFIL DE USUARIO
+const palettesRoutes = require('./routes/palettes'); // IMPORTAR RUTA DE PALETAS IA
 
 const app = express();
 const PORT = 3001;
@@ -77,7 +79,7 @@ app.get('/api/projects', (req, res) => {
       title: 'E-Commerce Platform',
       description: 'A full-stack e-commerce platform with Stripe integration for complete checkout flow.',
       technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-      imageUrl: 'https://via.placeholder.com/400x300?text=E-Commerce+Platform',
+      imageUrl: 'https://placehold.co/400x300?text=E-Commerce+Platform',
       githubUrl: 'https://github.com/username/ecommerce',
       liveUrl: 'https://ecommerce-live-demo.com'
     },
@@ -86,7 +88,7 @@ app.get('/api/projects', (req, res) => {
       title: 'Task Management App',
       description: 'A Kanban-style task management app with real-time updates and drag-and-drop.',
       technologies: ['Vue.js', 'Firebase', 'Tailwind CSS'],
-      imageUrl: 'https://via.placeholder.com/400x300?text=Task+Management',
+      imageUrl: 'https://placehold.co/400x300?text=Task+Management',
       githubUrl: 'https://github.com/username/task-app',
       liveUrl: 'https://task-app-demo.com'
     },
@@ -95,7 +97,7 @@ app.get('/api/projects', (req, res) => {
       title: 'Weather Dashboard',
       description: 'A dashboard showing current weather and a 5-day forecast using the OpenWeather API.',
       technologies: ['JavaScript', 'HTML5', 'CSS3', 'REST API'],
-      imageUrl: 'https://via.placeholder.com/400x300?text=Weather+Dashboard',
+      imageUrl: 'https://placehold.co/400x300?text=Weather+Dashboard',
       githubUrl: 'https://github.com/username/weather-dash',
       liveUrl: 'https://weather-dash-demo.com'
     },
@@ -104,7 +106,7 @@ app.get('/api/projects', (req, res) => {
       title: 'Social Media API',
       description: 'A robust RESTful backend API for a social media platform handling users, posts, and likes.',
       technologies: ['Express.js', 'PostgreSQL', 'Prisma', 'JWT'],
-      imageUrl: 'https://via.placeholder.com/400x300?text=Social+Media+API',
+      imageUrl: 'https://placehold.co/400x300?text=Social+Media+API',
       githubUrl: 'https://github.com/username/social-api',
       liveUrl: null
     },
@@ -113,7 +115,7 @@ app.get('/api/projects', (req, res) => {
       title: 'Portfolio Website',
       description: 'A responsive personal portfolio website to showcase my software projects and skills.',
       technologies: ['React', 'Framer Motion', 'Styled Components'],
-      imageUrl: 'https://via.placeholder.com/400x300?text=Portfolio+Website',
+      imageUrl: 'https://placehold.co/400x300?text=Portfolio+Website',
       githubUrl: 'https://github.com/username/portfolio',
       liveUrl: 'https://my-portfolio.com'
     }
@@ -132,6 +134,10 @@ app.use('/api/contact', contactRoutes);
 
 // --- CONECTAR RUTA DE ANALYTICS ---
 app.use('/api/analytics', analyticsRoutes);
+
+// --- CONECTAR RUTA DE PERFIL Y PALETAS ---
+app.use('/api/user', userRoutes);
+app.use('/api/palettes', palettesRoutes);
 
 // --- Iniciar Servidor ---
 app.listen(PORT, () => {

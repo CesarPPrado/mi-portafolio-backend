@@ -6,6 +6,7 @@ const path = require('path');
 const xlsx = require('xlsx');
 const mammoth = require('mammoth');
 const pdfParse = require('pdf-parse');
+const officeParser = require('officeparser');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 // Configuración de multer para guardar temporalmente en memoria (o en disco)
@@ -21,7 +22,7 @@ const API_KEY = process.env.GEMINI_API_KEY;
 async function extractTextFromBuffer(buffer, originalname, mimetype) {
   const ext = path.extname(originalname).toLowerCase();
   
-  if (ext === '.xlsx' || ext === '.xls') {
+  if (ext === '.xlsx' || ext === '.xls' || ext === '.csv') {
     const workbook = xlsx.read(buffer, { type: 'buffer' });
     const firstSheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[firstSheetName];
@@ -37,9 +38,13 @@ async function extractTextFromBuffer(buffer, originalname, mimetype) {
     const data = await pdfParse(buffer);
     return { type: 'pdf', content: data.text };
   }
-  else if (ext === '.pptx') {
-    // Si no tenemos officeparser, retornaremos un mensaje o podríamos agregarlo después.
-    throw new Error('El formato PPTX requiere una librería específica (ej. officeparser). Sube un PDF o DOCX por el momento.');
+  else if (ext === '.pptx' || ext === '.ppt') {
+    return new Promise((resolve, reject) => {
+      officeParser.parseOfficeBuffer(buffer, function(data, err) {
+        if (err) return reject(err);
+        resolve({ type: 'pptx', content: data });
+      });
+    });
   }
   else {
     throw new Error('Formato no soportado');

@@ -134,7 +134,7 @@ router.post('/google', async (req, res) => {
     // 3. Si no existe, lo creamos automáticamente (Registro)
     if (!user) {
       // Le asignamos una contraseña aleatoria robusta porque Google maneja la auth
-      const randomPassword = \`google_auth_\${Date.now()}_\${Math.random().toString(36).slice(-8)}\`;
+      const randomPassword = `google_auth_${Date.now()}_${Math.random().toString(36).slice(-8)}`;
       
       user = new User({
         email,
